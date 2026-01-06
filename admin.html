@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check-in Sinh viên 5 tốt - Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .main-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .input-section label {
+            display: block;
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 15px 20px;
+            font-size: 1.2rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.1);
+        }
+
+        .input-group button {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .input-group button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(52, 152, 219, 0.4);
+        }
+
+        .input-group button:active {
+            transform: translateY(0);
+        }
+
+        .status {
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+
+        .status.success {
+            display: block;
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            display: block;
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .stats {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stats h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .stat-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-item .number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #3498db;
+        }
+
+        .stat-item .label {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .history {
+            margin-top: 20px;
+        }
+
+        .history h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .history-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .history-item .mssv {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .history-item .time {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .connection-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .connection-status.connected {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .connection-status.disconnected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .instructions {
+            margin-top: 30px;
+            padding: 20px;
+            background: #e8f4fd;
+            border-radius: 12px;
+            border-left: 4px solid #3498db;
+        }
+
+        .instructions h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .instructions ol {
+            color: #5a6c7d;
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
+        }
+
+        .open-display-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #27ae60 0%, #219a52 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .open-display-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(39, 174, 96, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="connection-status disconnected" id="connectionStatus">
+        ⚪ Chưa kết nối màn hình
+    </div>
+
+    <div class="header">
+        <h1>🏆 Check-in Sinh viên 5 tốt</h1>
+        <p>Hệ thống quản lý check-in sự kiện</p>
+    </div>
+
+    <div class="main-container">
+        <div class="input-section">
+            <label for="mssvInput">Nhập MSSV sinh viên:</label>
+            <div class="input-group">
+                <input type="text" id="mssvInput" placeholder="VD: 2024001" autofocus>
+                <button onclick="sendCheckin()">Gửi</button>
+            </div>
+        </div>
+
+        <div class="status" id="status"></div>
+
+        <div class="stats">
+            <h3>📊 Thống kê</h3>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="number" id="totalCheckins">0</div>
+                    <div class="label">Đã check-in</div>
+                </div>
+                <div class="stat-item">
+                    <div class="number" id="lastCheckin">--</div>
+                    <div class="label">Gần nhất</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="history">
+            <h3>📋 Lịch sử check-in</h3>
+            <div class="history-list" id="historyList">
+                <p style="color: #7f8c8d; text-align: center; padding: 20px;">Chưa có ai check-in</p>
+            </div>
+        </div>
+
+        <button class="open-display-btn" onclick="openDisplay()">
+            📺 Mở màn hình hiển thị (TV)
+        </button>
+
+        <div class="instructions">
+            <h4>📝 Hướng dẫn:</h4>
+            <ol>
+                <li>Đặt ảnh sinh viên vào thư mục <strong>images/</strong></li>
+                <li>Đặt tên ảnh theo MSSV (VD: <strong>2024001.jpg</strong>)</li>
+                <li>Mở màn hình hiển thị trên TV</li>
+                <li>Nhập MSSV và nhấn Gửi để hiển thị ảnh</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        // BroadcastChannel để giao tiếp giữa các tab
+        const channel = new BroadcastChannel('sv5t-checkin');
+        
+        // Lịch sử check-in
+        let checkinHistory = JSON.parse(localStorage.getItem('sv5t-history') || '[]');
+        
+        // Khởi tạo
+        updateStats();
+        renderHistory();
+
+        // Lắng nghe phản hồi từ màn hình display
+        channel.onmessage = (event) => {
+            if (event.data.type === 'display-ready') {
+                document.getElementById('connectionStatus').className = 'connection-status connected';
+                document.getElementById('connectionStatus').textContent = '🟢 Đã kết nối màn hình';
+            } else if (event.data.type === 'display-closed') {
+                document.getElementById('connectionStatus').className = 'connection-status disconnected';
+                document.getElementById('connectionStatus').textContent = '⚪ Chưa kết nối màn hình';
+            }
+        };
+
+        // Gửi ping để kiểm tra kết nối
+        setInterval(() => {
+            channel.postMessage({ type: 'ping' });
+        }, 2000);
+
+        // Xử lý Enter key
+        document.getElementById('mssvInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendCheckin();
+            }
+        });
+
+        function sendCheckin() {
+            const input = document.getElementById('mssvInput');
+            const mssv = input.value.trim();
+            
+            if (!mssv) {
+                showStatus('Vui lòng nhập MSSV!', 'error');
+                return;
+            }
+
+            // Gửi đến màn hình display
+            channel.postMessage({
+                type: 'checkin',
+                mssv: mssv,
+                timestamp: new Date().toISOString()
+            });
+
+            // Lưu lịch sử
+            checkinHistory.unshift({
+                mssv: mssv,
+                time: new Date().toLocaleTimeString('vi-VN')
+            });
+            
+            // Giữ tối đa 50 bản ghi
+            if (checkinHistory.length > 50) {
+                checkinHistory = checkinHistory.slice(0, 50);
+            }
+            
+            localStorage.setItem('sv5t-history', JSON.stringify(checkinHistory));
+
+            showStatus(`✅ Đã gửi check-in cho MSSV: ${mssv}`, 'success');
+            
+            // Clear input và focus lại
+            input.value = '';
+            input.focus();
+
+            updateStats();
+            renderHistory();
+        }
+
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = 'status ' + type;
+            
+            setTimeout(() => {
+                status.className = 'status';
+            }, 3000);
+        }
+
+        function updateStats() {
+            document.getElementById('totalCheckins').textContent = checkinHistory.length;
+            document.getElementById('lastCheckin').textContent = 
+                checkinHistory.length > 0 ? checkinHistory[0].time : '--';
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('historyList');
+            
+            if (checkinHistory.length === 0) {
+                list.innerHTML = '<p style="color: #7f8c8d; text-align: center; padding: 20px;">Chưa có ai check-in</p>';
+                return;
+            }
+
+            list.innerHTML = checkinHistory.slice(0, 10).map(item => `
+                <div class="history-item">
+                    <span class="mssv">${item.mssv}</span>
+                    <span class="time">${item.time}</span>
+                </div>
+            `).join('');
+        }
+
+        function openDisplay() {
+            window.open('display.html', 'sv5t-display', 'fullscreen=yes');
+        }
+    </script>
+</body>
+</html>
