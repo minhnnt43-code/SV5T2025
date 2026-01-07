@@ -278,6 +278,18 @@
                 document.getElementById('waitingScreen').style.display = 'block';
             }
         });
+
+        // Click vào màn hình để vào fullscreen (ẩn thanh địa chỉ)
+        document.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log('Fullscreen error:', err);
+                });
+            }
+        });
+
+        // Hiển thị hướng dẫn
+        console.log('💡 Click vào màn hình hoặc nhấn F11 để vào chế độ toàn màn hình');
     </script>
 </body>
 
