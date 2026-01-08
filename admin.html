@@ -915,11 +915,29 @@
         renderHistory();
         renderStudentList();
 
+        // ============ MSSV NORMALIZATION ============
+        // Handle barcode format: 160K235042524 -> K235042524
+        // Handle QR code format: K235042524 (no change)
+        function normalizeMSSV(mssv) {
+            if (!mssv) return mssv;
+            // Remove "160" prefix if present at the start
+            if (mssv.startsWith('160')) {
+                return mssv.substring(3);
+            }
+            return mssv;
+        }
+
         // ============ INPUT HANDLING ============
         const input = document.getElementById('mssvInput');
 
         input.addEventListener('input', (e) => {
-            const value = e.target.value.trim();
+            let value = e.target.value.trim();
+            // Auto-normalize barcode format
+            const normalized = normalizeMSSV(value);
+            if (normalized !== value) {
+                e.target.value = normalized;
+                value = normalized;
+            }
             if (value) {
                 showPreview(value);
             } else {
@@ -973,7 +991,8 @@
         }
 
         function sendCheckin() {
-            const id = input.value.trim();
+            // Normalize MSSV to handle both barcode (160xxx) and QR code formats
+            const id = normalizeMSSV(input.value.trim());
 
             if (!id) {
                 showToast('Lỗi!', 'Vui lòng nhập số thứ tự', 'error');
